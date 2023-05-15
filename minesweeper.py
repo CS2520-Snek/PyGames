@@ -1,6 +1,7 @@
 import pygame
 import sys
 import random
+import os
 
 # creates game and sets the menu
 WIDTH = 60
@@ -270,7 +271,7 @@ class Menu():
             else:
                 return False
 
-
+os.environ['SDL_Video_CENTERED'] = '1' #center the game window
 pygame.init()
 size = (SIZE*(WIDTH + MARGIN) + MARGIN, (SIZE*(HEIGHT + MARGIN) + MARGIN) + MENU_SIZE)
 screen = pygame.display.set_mode(size, pygame.RESIZABLE)
@@ -288,6 +289,8 @@ while cont:
             sys.exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_ESCAPE:
+                with open("menu.py", "r") as rnf:
+                    exec(rnf.read())
                 cont = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
                 position = pygame.mouse.get_pos()

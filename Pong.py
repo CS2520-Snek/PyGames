@@ -1,6 +1,7 @@
 import sys
 import random
 import pygame
+import os
 
 def lose():
     screen.fill((0, 0, 0))
@@ -14,11 +15,12 @@ def win():
     screen.blit(title, (width / 2 - title.get_width() / 2, height / 2 - title.get_height() / 3))
     pygame.display.update()
 
+os.environ['SDL_Video_CENTERED'] = '1' #center the game window
 pygame.init()
 clk = pygame.time.Clock()
 
 width = 1280
-height = 960
+height = 800#960
 
 screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption('Pong')
@@ -61,6 +63,8 @@ while cont:
                 if event.key == pygame.K_DOWN:
                     p1_speed += 6
                 if event.key == pygame.K_ESCAPE:
+                    with open("menu.py", "r") as rnf:
+                        exec(rnf.read())
                     cont = False
         if game == "over":
             if win == 1:
