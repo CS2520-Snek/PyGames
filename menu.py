@@ -2,6 +2,12 @@ import sys
 import random
 import pygame
 import os
+'''
+In order to run first install pygame, instructions can be found at https://pypi.org/project/pygame/
+
+then run the menu.py file
+
+'''
 
 os.environ['SDL_Video_CENTERED'] = '1' #center the game window
 pygame.init()
