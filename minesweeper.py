@@ -2,17 +2,13 @@ import pygame
 import sys
 import random
 
-
-# Sets the WIDTH and HEIGHT of each grid location
+# creates game and sets the menu
 WIDTH = 60
 HEIGHT = 60
-# Sets the starting number of squares
 SIZE = 10
-# Sets the margin between each cell
 MARGIN = 5
 MENU_SIZE = 40
 LEFT_CLICK = 1
-# Colors used
 WHITE = (255, 255, 255)
 GRAY = (127, 127, 127)
 BLACK = (0, 0, 0)
@@ -20,10 +16,11 @@ BLUE = (0, 0, 255)
 GREEN = (0, 255, 0)
 RED = (255, 0, 0)
 
+
 # Class that holds the game logic          
 class Minesweeper:
     def __init__(self):
-        # Create a grid of SIZE x SIZE
+        # Creates grid
         self.grid = [[self.Cell(x, y) for x in range(SIZE)] for y in range(SIZE)]
         self.init = False
         self.game_lost = False
@@ -43,7 +40,7 @@ class Minesweeper:
             color = WHITE
             if self.grid[row][column].is_visible:
                 if self.grid[row][column].contains_bomb:
-                    color = RED
+                        color = RED
                 else:
                     color = GRAY
             elif self.grid[row][column].contains_flag:
@@ -72,7 +69,7 @@ class Minesweeper:
         size = ((self.squares_x*(WIDTH + MARGIN) + MARGIN), (self.squares_y*(HEIGHT + MARGIN) + MARGIN + MENU_SIZE))
         screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 
-    # Makes all cells visible when user loses
+    # Reveal bombs 
     def end_game(self):
         for row in range(self.squares_y):
             for column in range(self.squares_x):
@@ -80,7 +77,7 @@ class Minesweeper:
                     self.grid[row][column].is_visible = True
                 self.grid[row][column].contains_flag = False
 
-    # Changes the number of bombs placed and caps it
+    # Changes the number of bombs
     def change_num_bombs(self, bombs):
         self.num_bombs += bombs
         if self.num_bombs < 1:
@@ -89,7 +86,7 @@ class Minesweeper:
             self.num_bombs = self.squares_x * self.squares_y // 3
         self.restart() 
 
-    # Place BOMBS on random places
+    # Puts bombs in random locations 
     def set_bomb(self, row, column):
         bombplaced = 0
         while bombplaced < self.num_bombs:
@@ -103,13 +100,13 @@ class Minesweeper:
             self.restart()
             self.set_bomb(row, column)
         
-    # Count all bombs next to a cell (3x3) for the entire grid
+    # Count all bombs 
     def total_bombs(self):
         for row in range(self.squares_y):
             for column in range(self.squares_x):
                 self.grid[row][column].count_bombs(self.squares_y, self.squares_x)
     
-    # Restarts the game
+    # Restarts game
     def restart(self):
         for row in range(self.squares_y):
             for column in range(self.squares_x):
@@ -123,6 +120,7 @@ class Minesweeper:
                 self.game_won = False
                 self.flag_count = 0
 
+    # checks if player has won 
     def check_win(self):   
         count = 0
         total = self.squares_x * self.squares_y
@@ -279,29 +277,22 @@ class Menu():
                 return False
 
 
-# Initialize pygame and sets screen size and caption
 pygame.init()
 size = (SIZE*(WIDTH + MARGIN) + MARGIN, (SIZE*(HEIGHT + MARGIN) + MARGIN) + MENU_SIZE)
 screen = pygame.display.set_mode(size, pygame.RESIZABLE)
 pygame.display.set_caption("Minesweeper")
-# Font to use in the entire game
 font = pygame.font.Font('freesansbold.ttf', 24)
-# Create instances for Game and Menu
 game = Minesweeper()
 menu = Menu()
 clock = pygame.time.Clock()
 # Main loop
 while True:
     for event in pygame.event.get():
-        # Closes the game if user clicked the X
         if event.type == pygame.QUIT:  
             pygame.quit()
             sys.exit()
-        # Mouse clicks event
         elif event.type == pygame.MOUSEBUTTONDOWN:
-                # Get mouse position
                 position = pygame.mouse.get_pos()
-                # Change the screen coordinates to grid coordinates and caps max values
                 column = position[0] // (WIDTH + MARGIN)
                 row = (position[1] - MENU_SIZE) // (HEIGHT + MARGIN)
                 if row >= game.squares_y:
@@ -312,7 +303,6 @@ while True:
                     game.click_handle(row, column, event.button)
                 else:
                     menu.click_handle(game)
-        # Event for screen resize    
         elif event.type == pygame.VIDEORESIZE:
             if game.resize: 
                 game.adjust_grid(event.w, event.h)
@@ -322,5 +312,4 @@ while True:
     game.draw()
     menu.draw(game)
     clock.tick(60)
-    # Update the screen
     pygame.display.flip()
