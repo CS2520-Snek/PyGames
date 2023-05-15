@@ -10,6 +10,7 @@ SIZE = 10
 MARGIN = 5
 MENU_SIZE = 40
 LEFT_CLICK = 1
+RIGHT_CLICK = 3
 WHITE = (255, 255, 255)
 GRAY = (127, 127, 127)
 BLACK = (0, 0, 0)
@@ -157,7 +158,13 @@ class Minesweeper:
             else:
                 self.game_lost = False
                 self.restart()
-
+        elif button == RIGHT_CLICK and not self.grid[row][column].is_visible:
+            if not self.grid[row][column].contains_flag:
+                self.grid[row][column].contains_flag = True
+                self.flag_count += 1
+            else:
+                self.grid[row][column].contains_flag = False
+                self.flag_count -= 1
     class Cell:
 
         def __init__(self, x, y):
@@ -177,7 +184,7 @@ class Minesweeper:
                 else:
                     self.text = font.render(str(self.bomb_count), True, BLACK)
                 screen.blit(self.text, (self.x * (WIDTH + MARGIN) + 12, self.y * (HEIGHT + MARGIN) + 10 + MENU_SIZE))
-        
+            
         def count_bombs(self, squaresx, squaresy):
             if not self.test:
                 self.test = True
@@ -209,26 +216,28 @@ class Menu():
 
     def __init__(self):
         self.width = pygame.display.get_surface().get_width() - 2*MARGIN
-        self.btn_minus = self.Button(10, 10, 20, 20, "-", 6, -3)
-        self.btn_plus = self.Button(150, 10, 20, 20, "+", 3, -4)
-        self.btn_flags = self.Button(280, 16, 10, 10, "")
-        self.btn_flags.background = BLUE
+        self.button_minus = self.Button(10, 10, 20, 20, "-", 6, -3)
+        self.button_plus = self.Button(150, 10, 20, 20, "+", 3, -4)
+        self.button_flags = self.Button(280, 16, 10, 10, "")
+        self.button_flags.background = BLUE
         self.label_bombs = self.Label(30, 10)
         self.label_game_end = self.Label(100, 10)
-        self.label_flags = self.Label(self.width - 50, 10)
+        self.label_flags = self.Label(450, 10)
 
     def click_handle(self, obj):
-        if self.btn_minus.click_handle():
+        if self.button_minus.click_handle():
             obj.change_num_bombs(-1)
-        if self.btn_plus.click_handle():
+        if self.button_plus.click_handle():
             obj.change_num_bombs(1)
         
     def draw(self, obj):
         self.width = pygame.display.get_surface().get_width() - 2*MARGIN 
         pygame.draw.rect(screen, GRAY, [MARGIN, 0, self.width, MENU_SIZE])
-        self.btn_minus.draw(screen)
-        self.btn_plus.draw(screen)
+        self.button_minus.draw(screen)
+        self.button_plus.draw(screen)
         self.label_bombs.show(screen, str(game.num_bombs) + " bombs")
+        self.label_flags.show(screen, "Flags used: " + str(game.flag_count))
+
         if obj.game_lost:
             self.label_game_end.show(screen, "            You Lost!")
         elif obj.game_won:
