@@ -8,6 +8,8 @@ import time
 import random
 from pygame.locals import * #this will help with recognizing the keys entered by the users
 from pygame import mixer #this will be for music
+import os
+import sys
 
 SIZE = 40  #constant variable to be used for size of blocks for spacing (initially 15)
 BG_COLOR = (0,0,0) #constant to hold the background color to be used throughout the program execution
@@ -143,10 +145,11 @@ class Snake:
 #class for the game creation/initialization
 class Game:
     def __init__(self):
+        os.environ['SDL_Video_CENTERED'] = '1' #center the game window
         pygame.init() #initializes the game
         
         #set the dimentsions for the window surface
-        self.width = 1000
+        self.width = 1280 #1000
         self.height = 800
         self.timeValue = 0.15 #to be used for the movement delay timer
         self.surface = pygame.display.set_mode((self.width, self.height))   #initialize game window (first argument is window size - in this case 500x500 pixels)
@@ -196,9 +199,11 @@ class Game:
             #print('collison detected')
             self.snake.increaseLength() #increase the length of the snake
             self.apple.move() #move the apple to new position
-            if(self.timeValue > 0):
+            if self.timeValue > 0.01:
                 self.timeValue -= 0.01 #speed up the time value slightly to make it more challening after each apple is eaten
             else:
+                #pass
+                self.timeValue = 0.01
                 self.timeValue = self.timeValue
             
         #if a collision has been detected between snake and itself (start from index 1 because 0 is head of the snake) 
@@ -219,19 +224,19 @@ class Game:
     def showScore(self):
         font = pygame.font.SysFont('assets/SnakeFont',30) #create the font (and font size) to be used for the score
         score = font.render(f"SCORE: {self.snake.length}", True, (255,255,255)) #update the score (which will just be the snake length) by using render and also set the color of the score - (255,255,255) = white
-        self.surface.blit(score, (875, 10)) #use .blit() to draw the score onto the surface window (the background) at the given coordinates
-        
+        self.surface.blit(score, (1150, 10)) #use .blit() to draw the score onto the surface window (the background) at the given coordinates
+        #875
     def showGameOverScreen(self):
         self.surface.fill(BG_COLOR)  #re-initialize the screen which essentially clears it
         font = pygame.font.SysFont('assets/SnakeFont',85) #set the font type and size
         line2 = font.render("         GAME OVER!", True, (255,255,255)) #show the Game Over message
-        self.surface.blit(line2, (150,200)) #use .blit() to draw the message onto the surface window (the background) at the given coordinates
+        self.surface.blit(line2, (250,200)) #use .blit() to draw the message onto the surface window (the background) at the given coordinates
         line2 = font.render(f"            SCORE: {self.snake.length}", True, (255,255,255)) #show the final score (255,255,255) = white font color
-        self.surface.blit(line2, (150,300)) #show second line a bit lower than first line
+        self.surface.blit(line2, (250,300)) #show second line a bit lower than first line
         line3 = font.render("Press Enter to play again", True, (255,255,255))
-        self.surface.blit(line3, (150,400)) #show last line a bit lower than second line
+        self.surface.blit(line3, (250,400)) #show last line a bit lower than second line
         line4 = font.render("       Press Esc to exit", True, (255,255,255))
-        self.surface.blit(line4, (150,500)) #show last line a bit lower than second line
+        self.surface.blit(line4, (225,500)) #show last line a bit lower than second line
         pygame.display.update()  #must add this code to tell pygame to update the display - can also use pygame.display.flip()
         
     
@@ -254,7 +259,11 @@ class Game:
             for event in pygame.event.get():
                 if event.type == KEYDOWN:
                     if event.key == K_ESCAPE:
+                        mixer.music.stop()
+                        with open("menu.py", "r") as rnf:
+                            exec(rnf.read())
                         running = False
+                        #mixer.music.stop()
                     if event.key == K_RETURN:
                         paused = False
                         self.reset()
@@ -269,7 +278,10 @@ class Game:
                         if event.key == K_RIGHT:
                             self.snake.moveRight()
                 elif event.type == QUIT:
+                    pygame.exit()
+                    sys.exit()
                     running = False
+                    mixer.music.stop()
             
             #try-catch block to catch the GAME OVER! exception
             try:
