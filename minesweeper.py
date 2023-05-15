@@ -142,24 +142,21 @@ class Minesweeper:
             self.restart()
         elif button == LEFT_CLICK and not self.grid[row][column].contains_flag:
             if not self.game_lost:
-                # Place bombs after first click so you never click a bomb first
                 if not self.init:
                     self.set_bomb(row, column)
                     self.init = True
-            # Set the click square to visible
                 self.grid[row][column].is_visible = True
                 self.grid[row][column].contains_flag = False
                 if self.grid[row][column].contains_bomb:
                     self.end_game()
                     self.game_lost = True
                 elif self.grid[row][column].bomb_count == 0:
-                    self.grid[row][column].open_neighbours(self.squares_y, self.squares_x)
+                    self.grid[row][column].reveal_adjacent(self.squares_y, self.squares_x)
                 self.check_win()
             else:
                 self.game_lost = False
                 self.restart()
 
-    # Game Sub-Class for each Cell of the grid
     class Cell:
 
         def __init__(self, x, y):
@@ -172,7 +169,6 @@ class Minesweeper:
             self.test = False
             self.contains_flag = False
 
-        # Handle for the number of bombs text
         def show_text(self):
             if self.is_visible:
                 if self.bomb_count == 0:
@@ -181,7 +177,6 @@ class Minesweeper:
                     self.text = font.render(str(self.bomb_count), True, BLACK)
                 screen.blit(self.text, (self.x * (WIDTH + MARGIN) + 12, self.y * (HEIGHT + MARGIN) + 10 + MENU_SIZE))
         
-        # Counts how many bombs are next to this cell (3x3)
         def count_bombs(self, squaresx, squaresy):
             if not self.test:
                 self.test = True
@@ -194,8 +189,7 @@ class Minesweeper:
                                     self.bomb_count += 1
                                     
         
-        # Open all cells next to the clicked cell with zero bombs nearby
-        def open_neighbours(self, squaresx, squaresy):
+        def reveal_adjacent(self, squaresx, squaresy):
             column = self.x
             row = self.y
             for row_off in range(-1, 2):
@@ -207,7 +201,7 @@ class Minesweeper:
                                     game.grid[row + row_off][column + column_off].is_visible = True
                                     game.grid[row + row_off][column + column_off].contains_flag = False
                                     if game.grid[row + row_off][column + column_off].bomb_count == 0: 
-                                        game.grid[row + row_off][column + column_off].open_neighbours(game.squares_y, game.squares_x)
+                                        game.grid[row + row_off][column + column_off].reveal_adjacent(game.squares_y, game.squares_x)
 
 
 class Menu():
