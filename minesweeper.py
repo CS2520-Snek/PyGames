@@ -286,11 +286,15 @@ game = Minesweeper()
 menu = Menu()
 clock = pygame.time.Clock()
 # Main loop
-while True:
+cont = True
+while cont:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:  
             pygame.quit()
             sys.exit()
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_ESCAPE:
+                cont = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
                 position = pygame.mouse.get_pos()
                 column = position[0] // (WIDTH + MARGIN)

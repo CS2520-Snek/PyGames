@@ -42,7 +42,8 @@ font = pygame.font.SysFont('arial', 100)
 
 game = "cont"
 win = 0
-while True:
+cont = True
+while cont:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -59,6 +60,8 @@ while True:
                     p1_speed -= 6
                 if event.key == pygame.K_DOWN:
                     p1_speed += 6
+                if event.key == pygame.K_ESCAPE:
+                    cont = False
         if game == "over":
             if win == 1:
                 win()
