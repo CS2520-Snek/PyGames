@@ -2,6 +2,7 @@ import sys
 import random
 import pygame
 import os
+from minesweeper import *
 '''
 In order to run first install pygame, instructions can be found at https://pypi.org/project/pygame/
 
@@ -44,21 +45,21 @@ while menuRunning:
             sys.exit()
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_1:
-                with open("Snake.py", "r") as rnf:
+                with open("minesweeper.py", "r") as rnf:
                     exec(rnf.read())
             elif event.key == pygame.K_2:
                 with open("Pong.py", "r") as rnf:
                     exec(rnf.read())
             elif event.key == pygame.K_3:
-                with open("minesweeper.py", "r") as rnf:
+                with open("Snake.py", "r") as rnf:
                     exec(rnf.read())
             elif event.key == pygame.K_4 or event.key == pygame.K_ESCAPE:
                 menuRunning = False
     
     text = headerFont.render(f'PYGAME RETRO GAMES', False, white)
-    text2 = font.render(f'1) SPEED SNAKE', False, white)
+    text2 = font.render(f'1) MINESWEEPER', False, white)
     text3 = font.render(f'2) PONG', False, white)
-    text4 = font.render(f'3) MINESWEEPER', False, white)
+    text4 = font.render(f'3) SPEED SNAKE', False, white)
     text5 = font.render(f'4) QUIT', False, white)
     
     text_rect = text.get_rect(center=(w // 2, h // 4))

@@ -20,7 +20,7 @@ RED = (255, 0, 0)
 
 
 # Class that holds the game logic          
-class Minesweeper:
+class Game:
     def __init__(self):
         # Creates grid
         self.grid = [[self.Cell(x, y) for x in range(SIZE)] for y in range(SIZE)]
@@ -280,46 +280,49 @@ class Menu():
             else:
                 return False
 
-os.environ['SDL_Video_CENTERED'] = '1' #center the game window
-pygame.init()
-size = (SIZE*(WIDTH + MARGIN) + MARGIN, (SIZE*(HEIGHT + MARGIN) + MARGIN) + MENU_SIZE)
-screen = pygame.display.set_mode(size, pygame.RESIZABLE)
-pygame.display.set_caption("Minesweeper")
-font = pygame.font.Font('freesansbold.ttf', 24)
-game = Minesweeper()
-menu = Menu()
-clock = pygame.time.Clock()
-# Main loop
-cont = True
-while cont:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:  
-            pygame.quit()
-            sys.exit()
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                with open("menu.py", "r") as rnf:
-                    exec(rnf.read())
-                cont = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-                position = pygame.mouse.get_pos()
-                column = position[0] // (WIDTH + MARGIN)
-                row = (position[1] - MENU_SIZE) // (HEIGHT + MARGIN)
-                if row >= game.squares_y:
-                    row = game.squares_y - 1
-                if column >= game.squares_x:
-                    column = game.squares_x - 1
-                if row >= 0:
-                    game.click_handle(row, column, event.button)
-                else:
-                    menu.click_handle(game)
-        elif event.type == pygame.VIDEORESIZE:
-            if game.resize: 
-                game.adjust_grid(event.w, event.h)
-                game.restart()
-            else:  
-                game.resize = True
-    game.draw()
-    menu.draw(game)
-    clock.tick(60)
-    pygame.display.flip()
+
+
+if __name__ == "__main__":
+    os.environ['SDL_Video_CENTERED'] = '1' #center the game window
+    pygame.init()
+    size = (SIZE*(WIDTH + MARGIN) + MARGIN, (SIZE*(HEIGHT + MARGIN) + MARGIN) + MENU_SIZE)
+    screen = pygame.display.set_mode(size, pygame.RESIZABLE)
+    pygame.display.set_caption("Minesweeper")
+    font = pygame.font.Font('freesansbold.ttf', 24)
+    game = Game()
+    menu = Menu()
+    clock = pygame.time.Clock()
+    # Main loop
+    cont = True
+    while cont:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:  
+                pygame.quit()
+                sys.exit()
+            if event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE:
+                    with open("menu.py", "r") as rnf:
+                        exec(rnf.read())
+                    cont = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                    position = pygame.mouse.get_pos()
+                    column = position[0] // (WIDTH + MARGIN)
+                    row = (position[1] - MENU_SIZE) // (HEIGHT + MARGIN)
+                    if row >= game.squares_y:
+                        row = game.squares_y - 1
+                    if column >= game.squares_x:
+                        column = game.squares_x - 1
+                    if row >= 0:
+                        game.click_handle(row, column, event.button)
+                    else:
+                        menu.click_handle(game)
+            elif event.type == pygame.VIDEORESIZE:
+                if game.resize: 
+                    game.adjust_grid(event.w, event.h)
+                    game.restart()
+                else:  
+                    game.resize = True
+        game.draw()
+        menu.draw(game)
+        clock.tick(60)
+        pygame.display.flip()
