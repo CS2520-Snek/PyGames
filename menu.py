@@ -1,6 +1,12 @@
 import sys
 import random
 import pygame
+'''
+In order to run first install pygame, instructions can be found at https://pypi.org/project/pygame/
+
+then run the menu.py file
+
+'''
 
 pygame.init()
 clk = pygame.time.Clock()
